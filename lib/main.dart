@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'button_controller.dart';
+import 'utils.dart';
 
 void main() {
-  runApp(const CalculatorApp());
+  CalculatorController appController = CalculatorController();
+  runApp(CalculatorAppView(appController));
 }
 
-class CalculatorApp extends StatelessWidget {
-  const CalculatorApp({super.key});
+class CalculatorAppView extends StatelessWidget {
+  final CalculatorController controller;
+  const CalculatorAppView(this.controller, {super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,20 +18,18 @@ class CalculatorApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      home: const RootPage(),
+      home: RootPage(controller),
     );
   }
 }
 
 class RootPage extends StatefulWidget {
-  const RootPage({Key? key}) : super(key: key);
+  final CalculatorController controller;
+  
+  const RootPage(this.controller, {Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _RootPageState();
 }
-/* TODO: Extend widget for several screen sizes.
-   * - Mobile
-   * - Large
-   */
 
 // TODO: Additional features:
 //  - Save current calculator state.
@@ -67,77 +69,10 @@ class RootPage extends StatefulWidget {
 //  - Decimal signaling point
 //
 class _RootPageState extends State<RootPage> {
-  String content = "";
-  String previousAnswer = "";
-  String previousCharacter = "";
-  bool isDegree = true;
-  final sqrt = "√";
+  get controller => widget.controller;
 
-  bool isNumber(String value) {
-    return value == "0" ||
-        value == "1" ||
-        value == "2" ||
-        value == "3" ||
-        value == "4" ||
-        value == "5" ||
-        value == "6" ||
-        value == "7" ||
-        value == "8" ||
-        value == "9";
-  }
-
-  bool isAllowedRepetition(String value) {
-    return
-        isNumber(value) ||
-        value == "(" ||
-        value == ")";
-  }
-
-  bool isFunction(String value) {
-    return value == "Inv" ||
-        value == "tan" ||
-        value == "cos" ||
-        value == "sin" ||
-        value == "log" ||
-        value == sqrt ||
-        value == "ln";
-  }
-
-  bool isArithmeticOperation(String value) {
-    return
-        value == "/" ||
-        value == "x" ||
-        value == "-" ||
-        value == "+";
-  }
-
-  void addTextProtocol(String value) {
-    // TODO: This could probably benefit from some design pattern.
-    if (value == "AC") {
-      content = "";
-    } else if (value == "=") {
-      // Pass content to an Executioner
-      // Set previousAnswer
-      return;
-    } else if (value == "Ans") {
-      content += previousAnswer;
-    } else if (value == "x!") {
-      content += "!";
-      previousCharacter = "!";
-    } else if (isFunction(value)) {
-      content += "$value(";
-      previousCharacter = "(";
-    } else if (value == "Exp") {
-      content += "10^(";
-      previousCharacter = "(";
-      return;
-    } else if (!isAllowedRepetition(value) && value == previousCharacter) {
-      // Do nothing.
-      return;
-    } else {
-      content += value;
-      previousCharacter = value;
-    }
+  void buttonController(String value) {
+    controller.onCalculatorButtonPress(value);
   }
 
   @override
@@ -173,11 +108,11 @@ class _RootPageState extends State<RootPage> {
                 child: TextButton(
                     onPressed: (){
                       setState(() {
-                        isDegree = !isDegree;
+                        controller.isDegree = !controller.isDegree;
                       });
                     },
                     child: Text(
-                        isDegree ? "Degrees" : "Radians",
+                        controller.isDegree ? "Degrees" : "Radians",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20,
@@ -192,11 +127,11 @@ class _RootPageState extends State<RootPage> {
   Row buildConsole() {
     return Row(
           children: [
-            Container(
-              margin: const EdgeInsets.all(15.0),
-              child: Expanded(
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.all(15.0),
                 child: Text(
-                    content,
+                    controller.content,
                     overflow: TextOverflow.fade,
                     style: const TextStyle(
                       fontSize: 42,
@@ -215,7 +150,7 @@ class _RootPageState extends State<RootPage> {
             children: [
               buildKeyPadRow(buttonMargin, "Inv", "tan", "cos", "sin"),
               buildKeyPadRow(buttonMargin, "e", "log", "ln", "x!"),
-              buildKeyPadRow(buttonMargin, "√", "Exp", "^", "Ans"),
+              buildKeyPadRow(buttonMargin, Constants.sqrt, "Exp", "^", "Ans"),
               buildKeyPadRow(buttonMargin, "(", ")", "%", "AC"),
               buildKeyPadRow(buttonMargin, "7", "8", "9", "/"),
               buildKeyPadRow(buttonMargin, "4", "5", "6", "x"),
@@ -245,7 +180,7 @@ class _RootPageState extends State<RootPage> {
       style = ElevatedButton.styleFrom(
         backgroundColor: Colors.blue,
       );
-    } else if (isNumber(character) || character == ".") {
+    } else if (Utils.isNumber(character) || character == ".") {
       style = ElevatedButton.styleFrom(
         backgroundColor: Colors.blueGrey,
       );
@@ -265,7 +200,7 @@ class _RootPageState extends State<RootPage> {
                       style: style,
                       onPressed: (){
                         setState(() {
-                          addTextProtocol(character);
+                          buttonController(character);
                         });
                       },
                       child: Text(character)
