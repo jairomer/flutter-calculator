@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'button_controller.dart';
-import 'utils.dart';
+import 'symbol.dart';
+import 'globals.dart' as globals;
 
 void main() {
   CalculatorController appController = CalculatorController();
+  globals.log.d("Application started");
   runApp(CalculatorAppView(appController));
 }
 
@@ -25,7 +27,7 @@ class CalculatorAppView extends StatelessWidget {
 
 class RootPage extends StatefulWidget {
   final CalculatorController controller;
-  
+
   const RootPage(this.controller, {Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _RootPageState();
@@ -71,105 +73,99 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
   get controller => widget.controller;
 
-  void buttonController(String value) {
-    controller.onCalculatorButtonPress(value);
-  }
-
   @override
   Widget build(BuildContext context) {
     const buttonMargin = 5.0;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Simple Calculator')
-      ),
-      body: Column(
-        children: [
-          buildConsole(),
-          const Divider(
-            color: Colors.black,
-          ),
-          Expanded(
-              child: Container(height: 1)
-          ),
-          buildRadianDegreeSwitch(),
-          const Divider(
-            color: Colors.black,
-          ),
-          buildKeypad(buttonMargin)
-        ]
-      ),
+      appBar: AppBar(title: const Text('Simple Calculator')),
+      body: Column(children: [
+        buildConsole(),
+        const Divider(
+          color: Colors.black,
+        ),
+        Expanded(child: Container(height: 1)),
+        buildRadianDegreeSwitch(),
+        const Divider(
+          color: Colors.black,
+        ),
+        buildKeypad(buttonMargin)
+      ]),
     );
   }
 
   Row buildRadianDegreeSwitch() {
     return Row(
-          children: [
-            Expanded(
-                child: TextButton(
-                    onPressed: (){
-                      setState(() {
-                        controller.isDegree = !controller.isDegree;
-                      });
-                    },
-                    child: Text(
-                        controller.isDegree ? "Degrees" : "Radians",
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),)
-                )
-            ),
-          ],
-        );
+      children: [
+        Expanded(
+            child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    controller.isDegree = !controller.isDegree;
+                  });
+                },
+                child: Text(
+                  controller.isDegree ? "Degrees" : "Radians",
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ))),
+      ],
+    );
   }
 
   Row buildConsole() {
     return Row(
-          children: [
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.all(15.0),
-                child: Text(
-                    controller.content,
-                    overflow: TextOverflow.fade,
-                    style: const TextStyle(
-                      fontSize: 42,
-                    ),
-                ),
+      children: [
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.all(15.0),
+            child: Text(
+              controller.content,
+              overflow: TextOverflow.fade,
+              style: const TextStyle(
+                fontSize: 42,
               ),
             ),
-          ],
-        );
+          ),
+        ),
+      ],
+    );
   }
 
   Container buildKeypad(double buttonMargin) {
     return Container(
-          margin: const EdgeInsets.all(2.0),
-          child: Column (
-            children: [
-              buildKeyPadRow(buttonMargin, "Inv", "tan", "cos", "sin"),
-              buildKeyPadRow(buttonMargin, "e", "log", "ln", "x!"),
-              buildKeyPadRow(buttonMargin, Constants.sqrt, "Exp", "^", "Ans"),
-              buildKeyPadRow(buttonMargin, "(", ")", "%", "AC"),
-              buildKeyPadRow(buttonMargin, "7", "8", "9", "/"),
-              buildKeyPadRow(buttonMargin, "4", "5", "6", "x"),
-              buildKeyPadRow(buttonMargin, "1", "2", "3", "-"),
-              buildKeyPadRow(buttonMargin, "0", ".", "=", "+"),
-            ],
-          )
-    );
+        margin: const EdgeInsets.all(2.0),
+        child: Column(
+          children: [
+            buildKeyPadRow(buttonMargin, Symbols.inv, Symbols.tangent,
+                Symbols.cosine, Symbols.sine),
+            buildKeyPadRow(
+                buttonMargin, Symbols.e, Symbols.log, Symbols.ln, Symbols.fact),
+            buildKeyPadRow(buttonMargin, Symbols.sqrt, Symbols.exp, Symbols.pow,
+                Symbols.ans),
+            buildKeyPadRow(buttonMargin, Symbols.startParenthesis,
+                Symbols.endParenthesis, Symbols.percent, Symbols.ac),
+            buildKeyPadRow(buttonMargin, "7", "8", "9", Symbols.divOp),
+            buildKeyPadRow(buttonMargin, "4", "5", "6", Symbols.mulOp),
+            buildKeyPadRow(buttonMargin, "1", "2", "3", Symbols.subOp),
+            buildKeyPadRow(
+                buttonMargin, "0", Symbols.point, Symbols.eqOp, Symbols.addOp),
+          ],
+        ));
   }
 
-  Row buildKeyPadRow(double buttonMargin, String first, String second, String third, String fourth) {
+  Row buildKeyPadRow(double buttonMargin, String first, String second,
+      String third, String fourth) {
     return Row(
-            children: [
-              buildButton(buttonMargin, first),
-              buildButton(buttonMargin, second),
-              buildButton(buttonMargin, third),
-              buildButton(buttonMargin, fourth),
-            ],
-          );
+      children: [
+        buildButton(buttonMargin, first),
+        buildButton(buttonMargin, second),
+        buildButton(buttonMargin, third),
+        buildButton(buttonMargin, fourth),
+      ],
+    );
   }
 
   Expanded buildButton(double buttonMargin, String character) {
@@ -180,32 +176,30 @@ class _RootPageState extends State<RootPage> {
       style = ElevatedButton.styleFrom(
         backgroundColor: Colors.blue,
       );
-    } else if (Utils.isNumber(character) || character == ".") {
+    } else if (Symbols.isNumber(character) || character == ".") {
       style = ElevatedButton.styleFrom(
         backgroundColor: Colors.blueGrey,
       );
-    } else if (character == "AC") {
+    } else if (character == Symbols.ac) {
       style = ElevatedButton.styleFrom(
         backgroundColor: Colors.red,
       );
-    } else if (character == "Ans") {
+    } else if (character == Symbols.ac) {
       style = ElevatedButton.styleFrom(
         backgroundColor: Colors.orange,
       );
     }
     return Expanded(
-                child: Container(
-                  margin: EdgeInsets.all(buttonMargin),
-                  child: ElevatedButton(
-                      style: style,
-                      onPressed: (){
-                        setState(() {
-                          buttonController(character);
-                        });
-                      },
-                      child: Text(character)
-                  ),
-                )
-            );
+        child: Container(
+      margin: EdgeInsets.all(buttonMargin),
+      child: ElevatedButton(
+          style: style,
+          onPressed: () {
+            setState(() {
+              controller.onCalculatorButtonPress(character);
+            });
+          },
+          child: Text(character)),
+    ));
   }
 }

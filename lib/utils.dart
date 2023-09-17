@@ -1,43 +1,10 @@
-class Constants {
-  static const sqrt = "√";
-}
-
 class MyMath {
   static double floor(double d) {
-    return d - (d%1);
+    return d - (d % 1);
   }
 }
 
-class Utils {
-  static bool isFunction(String value) {
-    return value == "Inv" ||
-        value == "tan" ||
-        value == "cos" ||
-        value == "sin" ||
-        value == "log" ||
-        value == Constants.sqrt ||
-        value == "ln";
-  }
-  static bool isOperator(String token) {
-    return isFunction(token) ||
-        token == "*" ||
-        token == "+" ||
-        token == "/" ||
-        token == "-";
-  }
-  static bool isNumber(String value) {
-    return value == "0" ||
-        value == "1" ||
-        value == "2" ||
-        value == "3" ||
-        value == "4" ||
-        value == "5" ||
-        value == "6" ||
-        value == "7" ||
-        value == "8" ||
-        value == "9";
-  }
-}
+class Utils {}
 
 /// A pair of values
 class Pair<E, F> {
@@ -57,5 +24,4 @@ class Pair<E, F> {
 
   @override
   int get hashCode => first.hashCode ^ last.hashCode;
-
 }

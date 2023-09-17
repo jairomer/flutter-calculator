@@ -1,4 +1,6 @@
-import 'utils.dart';
+import 'package:scientific_calculator/calculator.dart';
+
+import 'symbol.dart';
 
 class CalculatorController {
   String content = "";
@@ -6,42 +8,29 @@ class CalculatorController {
   String previousCharacter = "";
   bool isDegree = true;
 
-  bool isAllowedRepetition(String value) {
-    return
-      Utils.isNumber(value) ||
-          value == "(" ||
-          value == ")";
-  }
-
-  bool isArithmeticOperation(String value) {
-    return
-      value == "/" ||
-          value == "x" ||
-          value == "-" ||
-          value == "+";
-  }
-
   void onCalculatorButtonPress(String value) {
-    // TODO: This could probably benefit from some design pattern.
-    if (value == "AC") {
-      content = "";
-    } else if (value == "=") {
-      // Pass content to an Executioner
-      // Set previousAnswer
+    if (value == Symbols.ac) {
+      content = Symbols.empty;
+    } else if (value == Symbols.eqOp) {
+      String? result = compute(content);
+      if (result != null) {
+        content = result;
+      }
       return;
-    } else if (value == "Ans") {
+    } else if (value == Symbols.ans) {
       content += previousAnswer;
-    } else if (value == "x!") {
-      content += "!";
-      previousCharacter = "!";
-    } else if (Utils.isFunction(value)) {
-      content += "$value(";
-      previousCharacter = "(";
-    } else if (value == "Exp") {
-      content += "10^(";
-      previousCharacter = "(";
+    } else if (value == Symbols.fact) {
+      content += Symbols.factOp;
+      previousCharacter = Symbols.factOp;
+    } else if (Symbols.isFunction(value)) {
+      content += value + Symbols.startParenthesis;
+      previousCharacter = Symbols.startParenthesis;
+    } else if (value == Symbols.exp) {
+      content += Symbols.consoleExp;
+      previousCharacter = Symbols.startParenthesis;
       return;
-    } else if (!isAllowedRepetition(value) && value == previousCharacter) {
+    } else if (!Symbols.isAllowedRepetition(value) &&
+        value == previousCharacter) {
       // Do nothing.
       return;
     } else {
