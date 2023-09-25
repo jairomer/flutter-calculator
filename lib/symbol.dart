@@ -32,10 +32,7 @@ class Symbols {
   }
 
   static bool isArithmeticOperation(Symbol symb) {
-    return symb == Symbols.divOp ||
-        symb == mulOp ||
-        symb == subOp ||
-        symb == addOp;
+    return symb == divOp || symb == mulOp || symb == subOp || symb == addOp;
   }
 
   static bool isFunction(Symbol value) {
@@ -49,11 +46,7 @@ class Symbols {
   }
 
   static bool isOperator(Symbol token) {
-    return isFunction(token) ||
-        token == mulOp ||
-        token == addOp ||
-        token == divOp ||
-        token == subOp;
+    return isFunction(token) || isArithmeticOperation(token);
   }
 
   static bool isNumber(Symbol value) {
