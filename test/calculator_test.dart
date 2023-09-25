@@ -24,13 +24,13 @@ void main() {
     expect(compute("-123.34"), "-123.34");
   });
   test('trivial negative case: Single nonterminal', () {
-    expect(compute("*"), null);
+    expect(compute("x"), null);
   });
   test('trivial negative case: Single nonterminal', () {
     expect(compute("/"), null);
   });
   test('trivial negative case: Missing Terminal in product', () {
-    expect(compute("1*"), null);
+    expect(compute("1x"), null);
   });
   test('trivial negative case: Missing Terminal in sum', () {
     expect(compute("1+"), null);
@@ -45,10 +45,10 @@ void main() {
     expect(compute("1+1"), "2.0");
   });
   test('trivial case: Product of two positive digits', () {
-    expect(compute("1*1"), "1.0");
+    expect(compute("1x1"), "1.0");
   });
   test('trivial case: Product of two positive digits', () {
-    expect(compute("2*1"), "2.0");
+    expect(compute("2x1"), "2.0");
   });
   test('trivial case: Division of two positive digits', () {
     expect(compute("1/1"), "1.0");
@@ -57,18 +57,18 @@ void main() {
     expect(compute("2/1"), "2.0");
   });
   test('case: Sum and multiplication of two positive digits', () {
-    expect(compute("1+2*1"), "3.0");
+    expect(compute("1+2x1"), "3.0");
   });
   test('case: Sum and multiplication of two positive digits', () {
-    expect(compute("2*1+1"), "3.0");
+    expect(compute("2x1+1"), "3.0");
   });
   test('case: Sum, multiplication and substraction of three positive digits',
       () {
-    expect(compute("2*1+1-5"), "-2.0");
+    expect(compute("2x1+1-5"), "-2.0");
   });
   test(
       'case: Sum, multiplication and substraction of two positive digits and one floating point value',
       () {
-    expect(compute("2*1+1-5.5"), "-2.5");
+    expect(compute("2x1+1-5.5"), "-2.5");
   });
 }

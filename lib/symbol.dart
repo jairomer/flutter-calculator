@@ -1,31 +1,31 @@
 typedef Symbol = String;
 
 class Symbols {
-  static Symbol empty = "";
-  static Symbol startParenthesis = "(";
-  static Symbol endParenthesis = ")";
-  static Symbol divOp = "/";
-  static Symbol mulOp = "x";
-  static Symbol subOp = "-";
-  static Symbol addOp = "+";
-  static Symbol ac = "AC";
-  static Symbol eqOp = "=";
-  static Symbol ans = "Ans";
-  static Symbol fact = "x!";
-  static Symbol factOp = "!";
-  static Symbol sqrt = "√";
-  static Symbol inv = "Inv";
-  static Symbol tangent = "tan";
-  static Symbol cosine = "cos";
-  static Symbol sine = "sin";
-  static Symbol log = "log";
-  static Symbol ln = "ln";
-  static Symbol e = "e";
-  static Symbol exp = "Exp";
-  static Symbol consoleExp = "10^(";
-  static Symbol pow = "^";
-  static Symbol percent = "%";
-  static Symbol point = ".";
+  static const Symbol empty = "";
+  static const Symbol startParenthesis = "(";
+  static const Symbol endParenthesis = ")";
+  static const Symbol divOp = "/";
+  static const Symbol mulOp = "x";
+  static const Symbol subOp = "-";
+  static const Symbol addOp = "+";
+  static const Symbol ac = "AC";
+  static const Symbol eqOp = "=";
+  static const Symbol ans = "Ans";
+  static const Symbol fact = "x!";
+  static const Symbol factOp = "!";
+  static const Symbol sqrt = "√";
+  static const Symbol inv = "Inv";
+  static const Symbol tangent = "tan";
+  static const Symbol cosine = "cos";
+  static const Symbol sine = "sin";
+  static const Symbol log = "log";
+  static const Symbol ln = "ln";
+  static const Symbol e = "e";
+  static const Symbol exp = "Exp";
+  static const Symbol consoleExp = "10^(";
+  static const Symbol pow = "^";
+  static const Symbol percent = "%";
+  static const Symbol point = ".";
 
   static bool isAllowedRepetition(Symbol symb) {
     return isNumber(symb) || symb == startParenthesis || symb == endParenthesis;

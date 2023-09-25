@@ -16,7 +16,7 @@ class Operations {
       var result = x1 * y1;
       return result.toString();
     } catch (e) {
-      return "";
+      return Symbols.empty;
     }
   }
 
@@ -27,7 +27,7 @@ class Operations {
       var result = x1 / y1;
       return result.toString();
     } catch (e) {
-      return "";
+      return Symbols.empty;
     }
   }
 
@@ -38,7 +38,7 @@ class Operations {
       var result = x1 + y1;
       return result.toString();
     } catch (e) {
-      return "";
+      return Symbols.empty;
     }
   }
 
@@ -49,7 +49,7 @@ class Operations {
       var result = x1 - y1;
       return result.toString();
     } catch (e) {
-      return "";
+      return Symbols.empty;
     }
   }
 
@@ -70,13 +70,13 @@ class Operations {
 
   static bool isOperation(String i, int op) {
     switch (i) {
-      case "*":
+      case Symbols.mulOp:
         return 0 == op;
-      case "/":
+      case Symbols.divOp:
         return 1 == op;
-      case "+":
+      case Symbols.addOp:
         return 2 == op;
-      case "-":
+      case Symbols.subOp:
         return 3 == op;
       default:
         return false;
@@ -86,32 +86,26 @@ class Operations {
   static String getOpString(int op) {
     switch (op) {
       case 0:
-        return "*";
+        return Symbols.mulOp;
       case 1:
-        return "/";
+        return Symbols.divOp;
       case 2:
-        return "+";
+        return Symbols.addOp;
       case 3:
-        return "-";
+        return Symbols.subOp;
       default:
-        return "";
+        return Symbols.empty;
     }
-  }
-
-  static bool isOp(String op) {
-    return op == '*' || op == '/' || op == '+' || op == '-';
   }
 }
 
 // Iterator solution
-String? calculatorIteratorStrategy(List<String> tokens) {
-  if (tokens.length == 1 && Operations.isOp(tokens[0])) {
-    // (tokens[0] == '*' || tokens[0] == '/')) {
+String? calculatorIteratorStrategy(List<Symbol> tokens) {
+  if (tokens.length == 1 && Symbols.isOperator(tokens[0])) {
     return null;
   }
 
-  var intermediate = <String>[];
-  //print("$tokens");
+  var intermediate = <Symbol>[];
   for (int op = 0; op < Operations.definedOpsCount; op++) {
     for (int j = 0; j < tokens.length; j++) {
       if (j > 0 &&
@@ -123,8 +117,6 @@ String? calculatorIteratorStrategy(List<String> tokens) {
         //print("last: ${intermediate[intermediate.length - 1]}");
         //print("op: ${Operations.getOpString(op)}");
         if (tokens[j] == "") {
-          //print(
-              "Cannot operate: ${intermediate.first}, ${Operations.getOpString(op)}  ${tokens[j + 1]}");
           return null;
         }
         j++;
@@ -133,7 +125,6 @@ String? calculatorIteratorStrategy(List<String> tokens) {
       }
     }
     tokens = intermediate;
-    //print("$tokens");
     intermediate = <String>[];
   }
 
@@ -141,7 +132,6 @@ String? calculatorIteratorStrategy(List<String> tokens) {
     return tokens[0];
   }
 
-  //print(tokens);
   return null;
 }
 
