@@ -1,11 +1,6 @@
 import 'package:scientific_calculator/symbol.dart';
 import 'package:scientific_calculator/tokenizer.dart';
 
-class SyntaxErrorException implements Exception {
-  String message;
-  SyntaxErrorException(this.message);
-}
-
 abstract class Operation {
   Symbol symbol();
   String apply(String x, String y);
