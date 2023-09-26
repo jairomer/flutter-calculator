@@ -6,10 +6,17 @@ class SyntaxErrorException implements Exception {
   SyntaxErrorException(this.message);
 }
 
-class Operations {
-  static const int definedOpsCount = 4;
+abstract class Operation {
+  Symbol symbol();
+  String apply(String x, String y);
+}
 
-  static String multiply(String x, String y) {
+class Multiplication implements Operation {
+  @override
+  Symbol symbol() { return Symbols.mulOp; }
+
+  @override
+  String apply(String x, String y) {
     try {
       var x1 = double.parse(x);
       var y1 = double.parse(y);
@@ -19,8 +26,14 @@ class Operations {
       return Symbols.empty;
     }
   }
+}
 
-  static String divide(String x, String y) {
+class Division implements Operation {
+  @override
+  Symbol symbol() { return Symbols.divOp; }
+
+  @override
+  String apply(String x, String y) {
     try {
       var x1 = double.parse(x);
       var y1 = double.parse(y);
@@ -30,8 +43,14 @@ class Operations {
       return Symbols.empty;
     }
   }
+}
 
-  static String sum(String x, String y) {
+class Addition implements Operation {
+  @override
+  Symbol symbol() { return Symbols.addOp; }
+
+  @override
+  String apply(String x, String y) {
     try {
       var x1 = double.parse(x);
       var y1 = double.parse(y);
@@ -41,8 +60,14 @@ class Operations {
       return Symbols.empty;
     }
   }
+}
 
-  static String sub(String x, String y) {
+class Substraction implements Operation {
+  @override
+  Symbol symbol() { return Symbols.subOp; }
+
+  @override
+  String apply(String x, String y) {
     try {
       var x1 = double.parse(x);
       var y1 = double.parse(y);
@@ -52,50 +77,34 @@ class Operations {
       return Symbols.empty;
     }
   }
+}
 
-  static String operate(String x, String y, int i) {
-    switch (i % 4) {
-      case 0:
-        return Operations.multiply(x, y);
-      case 1:
-        return Operations.divide(x, y);
-      case 2:
-        return Operations.sum(x, y);
-      case 3:
-        return Operations.sub(x, y);
-      default:
-        return "";
-    }
+class Operations {
+
+  List<Operation> operations = <Operation>[];
+
+  Operations() {
+    // Add new operations here.
+    operations.add(Multiplication());
+    operations.add(Division());
+    operations.add(Addition());
+    operations.add(Substraction());
   }
 
-  static bool isOperation(String i, int op) {
-    switch (i) {
-      case Symbols.mulOp:
-        return 0 == op;
-      case Symbols.divOp:
-        return 1 == op;
-      case Symbols.addOp:
-        return 2 == op;
-      case Symbols.subOp:
-        return 3 == op;
-      default:
-        return false;
-    }
+  int operationsCount() {
+    return operations.length;
   }
 
-  static String getOpString(int op) {
-    switch (op) {
-      case 0:
-        return Symbols.mulOp;
-      case 1:
-        return Symbols.divOp;
-      case 2:
-        return Symbols.addOp;
-      case 3:
-        return Symbols.subOp;
-      default:
-        return Symbols.empty;
-    }
+  String operate(String x, String y, int i) {
+    return operations[i%operations.length].apply(x, y);
+  }
+
+  bool isOperation(String i, int op) {
+    return operations[op].symbol() == i;
+  }
+
+  String getOpString(int op) {
+    return operations[op].symbol();
   }
 }
 
@@ -105,13 +114,15 @@ String? calculatorIteratorStrategy(List<Symbol> tokens) {
     return null;
   }
 
+  Operations operations = Operations();
+
   var intermediate = <Symbol>[];
-  for (int op = 0; op < Operations.definedOpsCount; op++) {
+  for (int op = 0; op < operations.operationsCount(); op++) {
     for (int j = 0; j < tokens.length; j++) {
       if (j > 0 &&
           j < tokens.length - 1 &&
-          Operations.isOperation(tokens[j], op)) {
-        intermediate[intermediate.length - 1] = Operations.operate(
+          operations.isOperation(tokens[j], op)) {
+        intermediate[intermediate.length - 1] = operations.operate(
             intermediate[intermediate.length - 1], tokens[j + 1], op);
         //print("value: ${tokens[j + 1]}");
         //print("last: ${intermediate[intermediate.length - 1]}");
